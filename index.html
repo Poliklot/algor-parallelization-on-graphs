@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Лабораторная работа №8</title>
+    <meta name="author" content="Poliklot">
+    <meta name="description" content="На данной странице показана лаборатоная работа по предмету: 'Распределённые алгоритмы'. Тема лабораторной работы :'Реализация задачи распараллеливания на графах'.">
+    <link rel="stylesheet" href="./style/reset.css">
+    <link rel="stylesheet" href="./style/fonts.css">
+    <link rel="stylesheet" href="./style/style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header__logo-wrapper">
+            <img src="./android-chrome-512x512.png" alt="Логотип" class="header__logo">
+        </div>
+    </header>
+    <main class="main">
+        <div class="nav">
+            <div class="nav__container">
+                <span class="nav__title">Панель управления</span>
+                <ul class="nav__controls-list">
+                    <li class="nav__controls-item">
+                        <button type="button" class="nav__button" id="buttonCreateRandomGraph">Создать рандомный граф</button>
+                    </li>
+                    <li class="nav__controls-item">
+                        <button type="button" class="nav__button" id="buttonFindAndShowTree">Построить остовное дерево</button>
+                    </li>
+                </ul>
+            </div>
+            <button type="button" class="nav__show-button--hidden nav__show-button nav__button" style="display: none;">Показать граф</button>
+        </div>
+        <div class="graph-container"></div>
+    </main>
+    <script src="./scripts/focus-visible.js"></script>
+    <script src="./scripts/vivagraph.js"></script>
+    <script src="./scripts/Trie.js"></script>
+    <script src="./scripts/script.js"></script>
+</body>
+</html>
