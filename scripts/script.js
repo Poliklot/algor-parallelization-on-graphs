@@ -38,7 +38,6 @@ function generateRandomIncidenceMatrix(numNodes, numEdges) {
         }
         matrix.push(nodeEdges);
     }
-    console.log(matrix);
     return matrix;
 }
 
@@ -96,18 +95,62 @@ const drawGraph = (data) => {
     })
     
     var graphics = Viva.Graph.View.svgGraphics();
+
+    // Задаем отображение ребер
+    graphics.link(function(link) {
+        if ((!link.data) || (link.fromId == link.toId)) return null
+        const g = Viva.Graph.svg('g');
+
+        const line = Viva.Graph.svg('line')
+        .attr('stroke', 'red')
+        .attr('stroke-width', (1 + +link.data.weight * .1).toFixed(1))
+        .attr('fill', 'red')
+        .attr('data-from-id', link.fromId)
+        .attr('data-to-id', link.toId)
+        .attr('id', `l-${link.fromId}-${link.toId}`);
+        g.linkObj = link;
     
-    graphics.link(function(link){
-        ui = Viva.Graph.svg('line')
-            .attr('stroke', 'red')
-            .attr('stroke-width', (1 + +link.data.weight * .1).toFixed(1))
-            .attr('fill', 'red')
-            .attr('data-from-id', link.fromId)
-            .attr('data-to-id', link.toId)
-            .attr('id', `l-${link.fromId}-${link.toId}`);
-        ui.linkObj = link;
-        return ui;
+        const label = Viva.Graph.svg('text')
+            .attr('text-anchor', 'middle')
+            .attr('font-size', '18px')
+            .attr('font-weight', '600')
+            .attr('fill', '#00d635');
+
+        if (link.fromId > link.toId) label.attr('transform', 'translate(0, 20)')
+    
+        label.text(link.data.weight)
+
+        g.append(line)
+        // g.append(arrowHead);
+        g.append(label)
+        return g;
     })
+    .placeLink(function(linkUI, fromPos, toPos) {
+        linkUI.querySelector('line')
+            .attr('x1', fromPos.x)
+            .attr('x2', toPos.x)
+            .attr('y1', fromPos.y)
+            .attr('y2', toPos.y);
+
+        const dx = toPos.x - fromPos.x,
+            dy = toPos.y - fromPos.y,
+            distance = Math.sqrt(dx * dx + dy * dy);
+            
+            linkUI.querySelector('text')
+                .attr('x', (fromPos.x + toPos.x) / 2)
+                .attr('y', (fromPos.y + toPos.y) / 2)
+    });
+    // graphics.link(function(link){
+    //     ui = Viva.Graph.svg('line')
+    //         .attr('stroke', 'red')
+    //         .attr('stroke-width', (1 + +link.data.weight * .1).toFixed(1))
+    //         .attr('fill', 'red')
+    //         .attr('data-from-id', link.fromId)
+    //         .attr('data-to-id', link.toId)
+    //         .attr('id', `l-${link.fromId}-${link.toId}`);
+    //     ui.linkObj = link;
+    //     return ui;
+    // })
 
     graphics.node(function(node){
         const ui = Viva.Graph.svg('g')
@@ -170,24 +213,31 @@ while (data == false) {
 drawGraph(data);
 
 const findNewTree = (tree) => {
-    console.log(tree);
     document.querySelector(`.graph-container svg > g > g#n-0 rect`).setAttribute('fill', 'blue');
     tree.forEach((node, index, arr) => {
         document.querySelector(`.graph-container svg > g > g#n-${node.v} rect`).setAttribute('fill', 'blue');
         document.querySelector(`.graph-container svg g line[data-to-id="${node.v}"][stroke-width="${(1 + node.w * .1).toFixed(1)}"]`).setAttribute('stroke', 'blue');
     })
+    
     document.querySelectorAll(`.graph-container svg g line[stroke="red"]`).forEach($line => {
+        $line.parentElement.querySelector('text').setAttribute('fill', 'transaprent');
         $line.setAttribute('stroke', 'transaprent');
         $line.setAttribute('data-remove-link', '');
     });
 }
 
 const showGraph = () => {
-    document.querySelectorAll('[data-remove-link]').forEach($link => {$link.setAttribute('stroke', 'red')});
+    document.querySelectorAll('[data-remove-link]').forEach($link => {
+        $link.parentElement.querySelector('text').setAttribute('fill', '#00d63544');
+        $link.setAttribute('stroke', 'red');
+    });
 }
 
 const hideGraph = () => {
-    document.querySelectorAll('[data-remove-link]').forEach($link => {$link.setAttribute('stroke', 'transparent')});
+    document.querySelectorAll('[data-remove-link]').forEach($link => {
+        $link.parentElement.querySelector('text').setAttribute('fill', 'transparent');
+        $link.setAttribute('stroke', 'transparent');
+    });
 }
 
 // DOM
